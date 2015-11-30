@@ -1,4 +1,4 @@
-**使用方法
+** 使用方法
 
 seajs.config({
       base: "./",
@@ -6,7 +6,7 @@ seajs.config({
       debug:true //禁用缓存，默认不禁用
   });
 
-**单独文件缓存
+** 单独文件缓存
 
  针对 http://path/to/c.js?v=xxx 单个文件版本做缓存，为每个文件添加版本号?v=xxxx;
  可使用seajs.config(map:map)做个版本映射,如下
