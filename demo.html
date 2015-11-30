@@ -12,8 +12,7 @@
 <script type="text/javascript">
 	seajs.config({
 		base:'.',
-        disableStore:false,
-        //'map' : [ [ /^(.*\.(?:css|js))(.*)$/i, '$1?v=20150417' ] ],
+        //'map' : [ [ /^(.*\.(?:css|js))(.*)$/i, '$1?v=20151126' ] ],
         debug : false
 	});
     var map = [];
@@ -27,14 +26,11 @@
                /* if (_so_versions[type][mod]) {
                     file += '?v=' + _so_versions[type][mod];
                 }*/
-             /*   if(file.indexOf('.html')>-1){
-                    version = 19;
-                }*/
+             
                 var reg = new RegExp('\\?v='+version);
                 if(!reg.exec(file)){
                     file += '?v='+version;
                 }
-                //console.log(file)
             }
         }
 
