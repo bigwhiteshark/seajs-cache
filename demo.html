@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<meta charset='utf-8'>
+<head>
+<script type="text/javascript" src="sea-debug.js"></script>
+<!-- <script type="text/javascript" src="sea.js"></script> -->
+<!-- <script src="seajs-cache1.js"></script> -->
+</head>
+<body>
+<div id='testcss'>测试so-css.js</div>
+<div id='testcssText'>测试cssText</div>
+<script type="text/javascript">
+	seajs.config({
+		base:'.',
+        disableStore:false,
+        //'map' : [ [ /^(.*\.(?:css|js))(.*)$/i, '$1?v=20150417' ] ],
+        debug : false
+	});
+    var map = [];
+    var SO_PRODUCTION = true;
+    map.push([/^(.*\.(?:(js|css|json|tpl)))(.*)$/i, function (file) {
+        if (typeof SO_PRODUCTION != 'undefined' && SO_PRODUCTION) {
+            var type = file.match(/\.([a-zA-H]*)$/);
+            if(type){
+                var mod = file.replace(/^.*?((js|css|json|tpl)\/)$/, '').replace(/\.js|\.css|\.json|\.tpl/, '');
+                var version = "20151126";
+               /* if (_so_versions[type][mod]) {
+                    file += '?v=' + _so_versions[type][mod];
+                }*/
+             /*   if(file.indexOf('.html')>-1){
+                    version = 19;
+                }*/
+                var reg = new RegExp('\\?v='+version);
+                if(!reg.exec(file)){
+                    file += '?v='+version;
+                }
+                //console.log(file)
+            }
+        }
+
+        return file;
+    }]);
+
+    seajs.config({
+        map: map
+    });
+
+	seajs.use('mods/main',function(main){
+		console.log(main,'boot');
+	});
+</script>
+</body>
+</html>
