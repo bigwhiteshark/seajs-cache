@@ -1,10 +1,10 @@
 ## 使用方法
 
-seajs.config({
-      base: "./",
-      cacheVersion:1,  //缓存版本号
-      debug:true //禁用缓存，默认不禁用
-  });
+    seajs.config({
+        base: "./",
+        cacheVersion:1,  //缓存版本号
+        debug:true //禁用缓存，默认不禁用
+    });
 
 ## 单独文件缓存
 
