@@ -7,7 +7,7 @@
 (function(global) {
     var storage = global.localStorage;
     if (storage) {
-        var storagePrefix = 'c~';
+        var storagePrefix = 'cache~';
         var defaultExpiration = 5000 * 60 * 60 * 1000; //ms unit
         var exec = seajs.Module.prototype.exec;
         var slice = Array.prototype.slice;
@@ -132,6 +132,14 @@
                 }
             }
         });
+
+        /*seajs.on('exec', function(mod) {
+            var uri = mod.uri;
+            if(uri.indexOf('.html')>-1){
+                console.log(mod)
+                debugger;
+            }
+         })*/
 
         /*seajs.on('save', function(mod) {
             var uri = mod.uri;
