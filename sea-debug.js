@@ -1563,8 +1563,8 @@
     seajs.on("request", function(data) {
         var name = uriCache[data.uri]
 
-        var localCode = seajs.getLocalCode(data.uri);
-        if (name && !localCode) {
+        var localCache = seajs.getLocalCache(data.uri);
+        if (name && !localCache.code) {
             xhr(data.requestUri, function(content) {
                 plugins[name].exec(data.uri, content)
                 data.onRequest()
@@ -1790,8 +1790,8 @@
         function getCacheInfo(uri) {
             var uriVersion = parseUrl(uri);
             return {
-                cacheVersion: cache.get(storagePrefix + 'version') || {},
                 cacheKey: uriVersion[0],
+                cacheVersion: cache.get(storagePrefix + 'version') || {},
                 remoteVersion: uriVersion[1]
             }
         }
@@ -1863,35 +1863,44 @@
                 var storeData = {
                     code: code
                 };
-                storeData = wrapData(storeData);
-                cache.set(key, storeData);
+                var localCache = seajs.getLocalCache(uri);
+                if(!localCache.code){
+                    storeData = wrapData(storeData);
+                    cache.set(key, storeData);
+                    var cacheKey = localCache.key;
+                    var remoteVersion = localCache.remoteVersion;
+                    var cacheVersion = localCache.cacheVersion;
+                    cacheVersion[cacheKey] = remoteVersion;
+                    cache.set(storagePrefix + 'version', cacheVersion);
+                }
 
-                var cacheInfo = getCacheInfo(uri);
-                var cacheKey = cacheInfo.cacheKey;
-                var remoteVersion = cacheInfo.remoteVersion;
-                var cacheVersion = cacheInfo.cacheVersion;
-                cacheVersion[cacheKey] = remoteVersion;
-                cache.set(storagePrefix + 'version', cacheVersion);
             }
             return exec.apply(this, slice.call(arguments));
         };
 
-        seajs.getLocalCode = function(uri) {
+        seajs.getLocalCache = function(uri) {
             var cacheInfo = getCacheInfo(uri);
             var cacheKey = cacheInfo.cacheKey;
             var remoteVersion = cacheInfo.remoteVersion;
             var cacheVersion = cacheInfo.cacheVersion;
 
             var storeData = cache.get(storagePrefix + cacheKey);
+            var code;
             if (storeData && remoteVersion === cacheVersion[cacheKey]) {
-                return storeData.code;
+                code = storeData.code;
+            }
+            return {
+                code:code,
+                key:cacheKey,
+                remoteVersion:remoteVersion,
+                cacheVersion:cacheVersion
             }
         }
 
         seajs.on("request", function(data) {
             var uri = data.requestUri;
             if (seajs.data.debug || !isSupportFile(uri)) return;
-            var localCode = seajs.getLocalCode(uri);
+            var localCode = seajs.getLocalCache(uri).code;
             if (localCode) {
                 globalEval(localCode);
                 data.requested = true;
